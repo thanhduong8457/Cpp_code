@@ -1,0 +1,3 @@
+/mnt/c/Users/duong.le-thanh/Documents/Visual Studio 2015/__Code__/systemc/C++/basic_features/build/CMakeFiles/OUTPUT.dir
+/mnt/c/Users/duong.le-thanh/Documents/Visual Studio 2015/__Code__/systemc/C++/basic_features/build/CMakeFiles/edit_cache.dir
+/mnt/c/Users/duong.le-thanh/Documents/Visual Studio 2015/__Code__/systemc/C++/basic_features/build/CMakeFiles/rebuild_cache.dir

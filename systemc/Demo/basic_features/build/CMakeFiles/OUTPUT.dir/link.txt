@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/OUTPUT.dir/main.cpp.o CMakeFiles/OUTPUT.dir/func.cpp.o CMakeFiles/OUTPUT.dir/Person.cpp.o CMakeFiles/OUTPUT.dir/Student.cpp.o -o OUTPUT 
