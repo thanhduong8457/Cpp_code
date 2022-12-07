@@ -7,7 +7,7 @@ dummy *top = NULL;
 
 int sc_main(int , char* [])
 {
-    top = new dummy("top");
+    //top = new dummy("top");
 
     // Start simulation
     sc_start();// run indefinitely

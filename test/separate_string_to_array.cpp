@@ -1,9 +1,10 @@
 #include <iostream>
 #include <stdio.h>
 #include <string.h>
+
 using namespace std;
 
-int main()
+int main(void)
 {
 	string temp;
 	getline(cin, temp);
@@ -30,15 +31,13 @@ int main()
     // Keep printing tokens while one of the
     // delimiters present in str[].
 	int i = 0;
-    while (token != NULL)
-    {
+    while (token != NULL) {
         //printf("%s\n", token);
 		array[i++] = stoi(token);
         token = strtok(NULL, " ");
     }
 
-	for (int i = n - 1; i >= 0; i--)
-	{
+	for (int i = n - 1; i >= 0; i--) {
 		cout << array[i];
 		if (i>0) cout << " ";
 		else cout << endl;

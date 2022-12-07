@@ -1,0 +1,56 @@
+common_bus HISTORY
+
+--------------------------------------------------------
+<2020.9.18>
+
+SVN version
+  Rev.347
+
+File
+  - OSCI2DCDR.h
+    - corrected the Copyright from "Copyright(c) 2014-202" to "Copyright(c) 2014-2020"
+--------------------------------------------------------
+<2020.9.17>
+
+SVN version
+  Rev.345
+
+File
+  - OSCI2DCDR.h
+    - corrected the array type from sc_pvector to std::vector and changed delete method from erase_all to swap due to change of the array type used
+    - added the delete processing for some variables for which delete processing was not implemented
+    - corrected the index of for statement to be implemented for the number of elements because the processing of the for statement was implemented so that it is executed once more than the number of elements in the array
+    - corrected the method of fetching the elements of the array from "varable.fetch(i)" to "variable[i]" due to change of the array type used
+--------------------------------------------------------
+<2017.10.26>
+
+SVN version
+  Rev.142 (Adapted to 64 bit OS)
+
+File
+  - OSCI2DCDR_WITH_ERRSIG.h
+    - outputLog() -> BusMonitorBase::outputLog()
+  - OSCI2DCDR.h
+    - printErrorMessage() -> CmErrMsg::printErrorMessage()
+    - changed the function for the getting address & size of slave in BUS.map from strtoul to strtoull
+  - BACKWARD_DECODER.h
+    - added the include of CmErrMsg.h
+    - printErrorMessage() -> CmErrMsg::printErrorMessage()
+  - BusMonitorBase.h
+    - deleted the cast of "unsigned int" for pointer at log output
+  - OSCI2ARBTR.h
+    - deleted the cast of "int" for pointer at debug log output
+    - in addition to above, the format specifier was changed from %x to %llx
+
+--------------------------------------------------------
+<2017.8.4>
+
+SVN version
+  Rev.121
+
+File
+  - BusBridgeSlaveBase.h 
+    - fixed the memory leakage issue
+  - BusBridgeCoreBase.h, BusMonitorBase.h
+    - adapted the addition of Speculative-load-flag and Secure-master-request-flag in TlmG3mExtension
+

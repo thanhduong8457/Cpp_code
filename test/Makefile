@@ -4,53 +4,91 @@
 
 GCC = g++
 
-workspace:
-	$(GCC) workspace.cpp -o ouput
-	./ouput
-	rm -rf ouput
+validParentheses:
+	@g++ validParentheses.cpp -o output
+	@./output
+	@rm -rf output
 
-delta: func.o delta.o
-	@$(GCC) func.o delta.o -o ouput
-	@./ouput
-	@rm -rf *.o
-	@rm -rf ouput
+longestCommonPrefix:
+	@g++ longestCommonPrefix.cpp -o output
+	@./output
+	@rm -rf output
 
-delta.o:
-	@$(GCC) -c delta.cpp -I./*
-
-func.o:
-	@$(GCC) -c func.cpp -I./*
+AddTwoNumbers:
+	@$(GCC) -o output ./AddTwoNumbers.cpp
+	@./output
+	@rm -rf output
 
 main:
-	@$(GCC) -o ouput main.cpp
-	@./ouput
-	@rm -rf ouput
+	@g++ main.cpp -o output
+	@./output
+	@rm -rf output
+
+romanToInt:
+	@g++ romanToInt.cpp -o output
+	@./output
+	@rm -rf output
+
+isPalindrome:
+	@g++ isPalindrome.cpp -o output
+	@./output
+	@rm -rf output
+
+twoSum:
+	@g++ twoSum.cpp -o output
+	@./output
+	@rm -rf output
+
+lengthOfLongestSubstring:
+	@g++ lengthOfLongestSubstring.cpp -o output
+	@./output
+	@rm -rf output
+
+test_namespace:
+	$(GCC) test_namespace.cpp -o output
+	./output
+	rm -rf output
+
+exception:
+	$(GCC) exception.cpp -o output
+	./output
+	rm -rf output
+
+workspace:
+	$(GCC) workspace.cpp -o output
+	./output
+	rm -rf output
 
 struct_vector:
-	@$(GCC) -o ouput struct_vector.c
-	@./ouput
-	@rm -rf ouput
+	@$(GCC) -o output struct_vector.c
+	@./output
+	@rm -rf output
 
-num_print:
-	@$(GCC) -o ouput num_print.cpp
-	@./ouput
-	@rm -rf ouput
+template:
+	@$(GCC) -o output template.cpp
+	@./output
+	@rm -rf output
 
-test_json: test_json.o cJSON.o
-	@$(GCC) test_json.o cJSON.o -o ouput
-	@./ouput
+numPrint:
+	@$(GCC) -o output num_print.cpp
+	@./output
+	@rm -rf output
+
+testJson: testJson.o cJSON.o
+	@$(GCC) testJson.o cJSON.o -o output
+	@./output
 	@rm -rf *.o
-	@rm -rf ouput
+	@rm -rf output
 
-test_json.o:
-	@$(GCC) -c test_json.cpp -I./*
+testJson.o:
+	@$(GCC) -c testJson.cpp -I./*
 
 cJSON.o:
-	@$(GCC) -c ./cJSON/cJSON.c -I./cJSON/*
+	@$(GCC) -c ../library/cjson/cJSON.c -I./cJSON/*
 
 run:
-	@./ouput
+	@./output
 	
 clean:
 	@rm -rf *.o
-	@rm -rf ouput
+	@rm -rf output

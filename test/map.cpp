@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iterator>
 #include <map>
 
 using namespace std;
@@ -9,18 +10,18 @@ using namespace std;
 //find
 //erase
 
-int main()
+int main(void)
 {
 	map<int, int> mp;
+	map<int, int>::iterator itr;
 
 	mp[1] = 2;
 	mp[2] = 3;
 	mp[5] = 2;
 	mp[6] = 3;
 
-	for(auto it : mp)
-	{
-		cout<<it.first<<" "<<it.second<<endl;
+	for(itr = mp.begin(); itr != mp.end(); itr++) {
+		cout<<itr.first<<" "<<itr.second<<endl;
 	}
 
 	return 0;
