@@ -37,12 +37,6 @@ private:
     };
 public:
     bool isValid(string s) {
-        if (s.size() % 2) {
-            return false;
-        }
-
-        bool is_open = false;
-
         vector<unsigned int> list_bracket;
         for (int i = 0; i< s.size(); i++) {
             switch ((int)s[i]) {
@@ -50,8 +44,8 @@ public:
                     list_bracket.push_back(emRoundBracketOpen);
                     break;
                 case emRoundBracketClose:
-                    if ((list_bracket.size() != 0) && (emRoundBracketOpen != list_bracket[list_bracket.size()-1])) {
-                    return false;
+                    if ((list_bracket.size() == 0) || (emRoundBracketOpen != list_bracket[list_bracket.size()-1])) {
+                        return false;
                     }
                     list_bracket.pop_back();
                     break;
@@ -60,7 +54,7 @@ public:
                     list_bracket.push_back(emBracketOpen);
                     break;
                 case emBracketClose:
-                    if ((list_bracket.size() != 0) && (emBracketOpen != list_bracket[list_bracket.size()-1])) {
+                    if ((list_bracket.size() == 0) || (emBracketOpen != list_bracket[list_bracket.size()-1])) {
                         return false;
                     }
                     list_bracket.pop_back();
@@ -70,7 +64,7 @@ public:
                     list_bracket.push_back(emCurlyBracketOpen);
                     break;
                 case emCurlyBracketClose:
-                    if ((list_bracket.size() != 0) && (emCurlyBracketOpen != list_bracket[list_bracket.size()-1])) {
+                    if ((list_bracket.size() == 0) || (emCurlyBracketOpen != list_bracket[list_bracket.size()-1])) {
                         return false;
                     }
                     list_bracket.pop_back();

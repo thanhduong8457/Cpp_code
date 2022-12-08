@@ -4,6 +4,16 @@
 
 GCC = g++
 
+removeDuplicates:
+	@g++ removeDuplicates.cpp -o output
+	@./output
+	@rm -rf output
+
+mergeTwoLists:
+	@g++ mergeTwoLists.cpp -o output
+	@./output
+	@rm -rf output
+
 validParentheses:
 	@g++ validParentheses.cpp -o output
 	@./output

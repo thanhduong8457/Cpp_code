@@ -18,9 +18,6 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\test\validParentheses.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E7B7F49F-7A59-4C07-A3EB-8527C701D08E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

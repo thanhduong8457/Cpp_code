@@ -4,7 +4,7 @@
 
 using namespace std;
 
-int main () 
+int main (void) 
 {
    // string str1 = "Hello";
    // string str2 = "World";
