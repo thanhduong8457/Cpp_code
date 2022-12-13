@@ -23,22 +23,14 @@ int main (void)
    // len = str3.size();
    // cout << "str3.size() :  " << len << endl;
    
-   vector<int> test_vector;
-
-   test_vector.push_back(1);
-   test_vector.push_back(2);
-   test_vector.push_back(3);
-   test_vector.push_back(4);
-
-   cout << test_vector.size() << endl;
-
-   int temp;
-
-   test_vector.pop_back(temp);
-
-   cout << temp  << endl;
-
-   cout << test_vector.size() << endl;
+      for (int j = 0; j < 82; j++) {
+         if (j < 10) {
+            cout << j << "  ";
+         }
+         else {
+            cout << j << " ";
+         }
+      }
 
    return 0;
 }

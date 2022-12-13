@@ -56,6 +56,7 @@ void judment(bool is_pass) {
         cout << "This check point is PASS" << endl << endl;
     } else {
         cout << "This check point is FAIL" << endl << endl;
+        exit(0);
     }
 }
 
