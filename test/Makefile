@@ -4,6 +4,11 @@
 
 GCC = g++
 
+isValidSudoku:
+	@g++ isValidSudoku.cpp -o output
+	@./output
+	@rm -rf output
+
 removeDuplicates:
 	@g++ removeDuplicates.cpp -o output
 	@./output
