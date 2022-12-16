@@ -30,23 +30,43 @@ public:
                 if (true == is_insert) {
                     list_string.push_back(s[j]);
                     if (j == s.size() - 1) {
-                        list_vector_string.push_back(list_string);
+                        if (list_vector_string.size() > 1) {
+                            if (list_string.size() >= list_vector_string[list_vector_string.size() - 1].size()) {
+                                list_vector_string.push_back(list_string);
+                            }
+                        }
+                        else {
+                            list_vector_string.push_back(list_string);
+                        }
                         list_string.erase(list_string.begin(), list_string.end());
                         break;
                     }
                 } else {
-                    list_vector_string.push_back(list_string);
+                    if (list_vector_string.size() > 1) {
+                        if (list_string.size() >= list_vector_string[list_vector_string.size() - 1].size()) {
+                            list_vector_string.push_back(list_string);
+                        }
+                    }
+                    else {
+                        list_vector_string.push_back(list_string);
+                    }
                     list_string.erase(list_string.begin(), list_string.end());
                     is_insert = true;
                     break;
                 }
             }
         }
+        cout << "there are " << list_vector_string.size() << " sub string" << endl;
         for (int i = 0; i < list_vector_string.size(); i++) {
+            for (int j = 0; j < list_vector_string[i].size(); j++) {
+                cout << list_vector_string[i][j];
+            }
+            cout << " ";
             if (list_vector_string[i].size() > max) {
                 max = list_vector_string[i].size();
             }
         }
+        cout << endl;
         return max;
     }
 };
@@ -61,20 +81,19 @@ void judment(bool is_pass) {
 }
 
 void check_point(string my_string, const unsigned int expected_val) {
-    
     Solution *mSolution = NULL;
     mSolution = new Solution();
 
-    unsigned int val = mSolution->lengthOfLongestSubstring(my_string);
+    cout << "test run with string: \"" << my_string << "\"" << endl;
 
-    cout << "test run with string: \"" << my_string << "\"" << endl << "result is:   " << val << endl <<"expected is: " << expected_val << endl;
+    unsigned int val = mSolution->lengthOfLongestSubstring(my_string);
+    cout << "result is:   " << val << endl << "expected is: " << expected_val << endl;
 
     if (expected_val == val) {
         judment(true);
     } else {
         judment(false);
     }
-    
     delete mSolution;
 }
 

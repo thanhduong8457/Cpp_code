@@ -65,8 +65,7 @@ int main()
 
     r = 0;
 
-    for(int z_test =-375; z_test>=-480; z_test--)
-    {
+    for(int z_test =-375; z_test>=-480; z_test--) {
         cout<<"with z = "<<z_test<<endl;
         is_not_exit = true;
         r = 0;
