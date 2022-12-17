@@ -4,8 +4,8 @@
 
 GCC = g++
 
-isValidSudoku:
-	@g++ isValidSudoku.cpp -o output
+sudoku:
+	@g++ sudoku.cpp -o output
 	@./output
 	@rm -rf output
 

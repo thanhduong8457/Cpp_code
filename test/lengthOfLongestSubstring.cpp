@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <set>
 
 using namespace std;
 
@@ -16,6 +17,8 @@ public:
         unsigned int max = 0;
         vector<char> list_string;
         vector<vector<char>> list_vector_string;
+        set<vector<char>> set_vector_string;
+        set<vector<char>>::iterator itr;
         if (1 == s.size()) {
             return 1;
         }
@@ -56,14 +59,19 @@ public:
                 }
             }
         }
-        cout << "there are " << list_vector_string.size() << " sub string" << endl;
+
         for (int i = 0; i < list_vector_string.size(); i++) {
-            for (int j = 0; j < list_vector_string[i].size(); j++) {
-                cout << list_vector_string[i][j];
+            set_vector_string.insert(list_vector_string[i]);
+        }
+
+        cout << "there are " << set_vector_string.size() << " different sub string" << endl;
+        for (itr = set_vector_string.begin(); itr != set_vector_string.end(); itr++) {
+            for (int i = 0; i < itr->size(); i++) {
+                cout << *(itr->begin() + i);
             }
             cout << " ";
-            if (list_vector_string[i].size() > max) {
-                max = list_vector_string[i].size();
+            if (itr->size() > max) {
+                max = itr->size();
             }
         }
         cout << endl;
@@ -73,9 +81,9 @@ public:
 
 void judment(bool is_pass) {
     if (true == is_pass) {
-        cout << "This check point is PASS" << endl << endl;
+        cout << "############# This checkpoint is PASS #############" << endl << endl;
     } else {
-        cout << "This check point is FAIL" << endl << endl;
+        cout << "############# This checkpoint is FAIL #############" << endl << endl;
         exit(0);
     }
 }
@@ -124,6 +132,10 @@ int main(void)
     check_point("aaaaaaaaa", 1);
 
     check_point("ohomm", 3);
+
+    cout << "######################################" << endl;
+    cout << "############# TM is PASS #############" << endl;
+    cout << "######################################" << endl;
 
     return 0;
 } 

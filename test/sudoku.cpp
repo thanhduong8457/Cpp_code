@@ -6,6 +6,9 @@
 
 using namespace std;
 
+//#define CASE_CHECK_VALID
+//#define ENABLE_DEBUG
+
 class Solution {
 private:
     enum ASCII_VALUE {
@@ -35,7 +38,6 @@ private:
                         }
                     }
                 }
-
             }
         }
         return return_val;
@@ -116,7 +118,7 @@ private:
         }
         return board_int_return;
     }
-    vector<vector<int>> createInBlock(vector<vector<int>> vector_int) {
+    vector<vector<int>> transfromFromBlock(vector<vector<int>> vector_int) {
         vector<int> block0;
         vector<int> block1;
         vector<int> block2;
@@ -170,39 +172,7 @@ private:
 
         board = matrixMultiplication(board, mUnitMatrix);
     }
-public:
-    bool isValidSudoku(vector<vector<char>>& board) {
-        bool return_val = true;
-        vector<vector<int>> vector_int;
-        vector<vector<int>> vector_in_block;
-
-        vector_int = converToInt(board);
-        //printBoardInt(vector_int);
-
-        return_val = isNoRepeat(vector_int);
-        if (false == return_val) {
-            return false;
-        }
-
-        vector_in_block = createInBlock(vector_int);
-        //printBoardInt(vector_in_block);
-
-        return_val = isNoRepeat(vector_in_block);
-        if (false == return_val) {
-            return false;
-        }
-
-        transposition(vector_int);
-        //printBoardInt(vector_int);
-
-        return_val = isNoRepeat(vector_int);
-        if (false == return_val) {
-            return false;
-        }
-
-        return return_val;
-    }
-    void printBoardChar(vector<vector<char>>& board) {
+    void printBoardInt(vector<vector<int>>& board) {
         for (int row = 0; row < board.size(); row++) {
             for (int colum = 0; colum < board[row].size(); colum++) {
                 cout << " " << board[row][colum] << " ";
@@ -211,7 +181,170 @@ public:
         }
         cout << endl;
     }
-    void printBoardInt(vector<vector<int>>& board) {
+    unsigned int atWhichInBlock(const unsigned int row, const unsigned int colum) {
+        unsigned int return_val = 0;
+        if (row < 3) {
+            return_val = 0;
+        }
+        else if (row < 6) {
+            return_val = 3;
+        }
+        else {
+            return_val = 6;
+        }
+        if (colum < 3) {
+            return_val += 0;
+        }
+        else if (colum < 6) {
+            return_val += 1;
+        }
+        else {
+            return_val += 2;
+        }
+        return return_val;
+    }
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        bool return_val = true;
+        vector<vector<int>> boardConvertToInt;
+        vector<vector<int>> boardTransposition;
+        vector<vector<int>> boardTransfromFromBlock;
+
+        boardConvertToInt = converToInt(board);
+#ifdef ENABLE_DEBUG
+        cout << "matrix after convert member to int" << endl;
+        printBoardInt(boardConvertToInt);
+#endif
+        return_val = isNoRepeat(boardConvertToInt);
+        if (false == return_val) {
+            return return_val;
+        }
+
+        boardTransfromFromBlock = transfromFromBlock(boardConvertToInt);
+#ifdef ENABLE_DEBUG
+        cout << "matrix after group member from block" << endl;
+        printBoardInt(boardTransfromFromBlock);
+#endif
+        return_val = isNoRepeat(boardTransfromFromBlock);
+        if (false == return_val) {
+            return return_val;
+        }
+
+        boardTransposition = converToInt(board);
+        transposition(boardTransposition);
+#ifdef ENABLE_DEBUG
+        cout << "matrix after transposition" << endl;
+        printBoardInt(boardTransposition);
+#endif
+        return_val = isNoRepeat(boardTransposition);
+        if (false == return_val) {
+            return return_val;
+        }
+
+        return return_val;
+    }
+    void solveSudoku(vector<vector<char>>& board) {
+        if (false == isValidSudoku(board)) {
+            return;
+        }
+        vector<vector<int>> boardConvertToInt;
+        vector<vector<int>> boardTransfromFromBlock;
+
+        map<int, vector<int>> valueAvailable;
+        map<int, vector<int>>::iterator itValAva;
+
+        map<int, bool> numArray;
+        map<int, bool>::iterator itr;
+
+        boardConvertToInt = converToInt(board);
+        boardTransfromFromBlock = transfromFromBlock(boardConvertToInt);
+
+        bool isContinueCaculate = true;
+        while (isContinueCaculate) {
+            isContinueCaculate = false;
+            for (int row = 0; row < boardConvertToInt.size(); row++) {
+                for (int colum = 0; colum < boardConvertToInt[row].size(); colum++) {
+                    if (0 != boardConvertToInt[row][colum]) {
+                        continue;
+                    }
+                    else {
+                        for (int i = 1; i < 10; i++) {
+                            numArray[i] = false;
+                        }
+                        for (int i = 0; i < boardConvertToInt.size(); i++) {
+                            if (0 == boardConvertToInt[row][i]) {
+                                continue;
+                            }
+                            else {
+                                numArray[boardConvertToInt[row][i]] = true;
+                            }
+                        }
+                        for (int i = 0; i < boardConvertToInt.size(); i++) {
+                            if (0 == boardConvertToInt[i][colum]) {
+                                continue;
+                            }
+                            else {
+                                numArray[boardConvertToInt[i][colum]] = true;
+                            }
+                        }
+                        for (int i = 0; i < boardTransfromFromBlock.size(); i++) {
+                            int fixed = atWhichInBlock(row, colum);
+                            if (0 == boardTransfromFromBlock[fixed][i]) {
+                                continue;
+                            }
+                            else {
+                                numArray[boardTransfromFromBlock[fixed][i]] = true;
+                            }
+                        }
+                        for (itr = numArray.begin(); itr != numArray.end(); itr++) {
+                            if (false == itr->second) {
+                                valueAvailable[row + colum * 10].push_back(itr->first);
+                            }
+                        }
+                    }
+                }
+            }
+        
+            for (itValAva = valueAvailable.begin(); itValAva != valueAvailable.end(); itValAva++) {
+                int row = itValAva->first % 10;
+                int colum = (itValAva->first - row) / 10;
+#ifdef ENABLE_DEBUG
+                cout << "with [row][colum] = [" << row << "][" << colum << "] value available is: ";
+                for (int i = 0; i < itValAva->second.size(); i++) {
+                    cout << itValAva->second[i] << " ";
+                }
+                cout << endl;
+#endif
+                if (1 == itValAva->second.size()) {
+                    isContinueCaculate = true;
+                    boardConvertToInt[row][colum] = itValAva->second[0];
+#ifdef ENABLE_DEBUG
+                    board = converToChar(boardConvertToInt); // no need update immediately
+#endif
+                    boardTransfromFromBlock = transfromFromBlock(boardConvertToInt);
+                }
+                else {
+                    continue;
+                }
+
+                //cout << "with [row][colum] = [" << row << "][" << colum << "] value available is: ";
+                //for (int i = 0; i < itValAva->second.size(); i++) {
+                //    cout << itValAva->second[i] << " ";
+                //}
+                //cout << endl;
+            }
+            valueAvailable.erase(valueAvailable.begin(), valueAvailable.end());
+#ifdef ENABLE_DEBUG
+            cout << "board after update" << endl;
+            printBoardChar(board);
+            cout << endl;
+#endif
+        }
+#ifndef ENABLE_DEBUG
+        board = converToChar(boardConvertToInt);
+#endif
+    }
+    void printBoardChar(vector<vector<char>>& board) {
         for (int row = 0; row < board.size(); row++) {
             for (int colum = 0; colum < board[row].size(); colum++) {
                 cout << " " << board[row][colum] << " ";
@@ -231,8 +364,7 @@ void judment(bool is_pass) {
         exit(0);
     }
 }
-
-void check_point(vector<vector<char>>& board, bool expected_val) {
+void isValidSudoku(vector<vector<char>>& board, bool expected_val) {
     Solution *mSolution = NULL;
     mSolution = new Solution();
 
@@ -253,10 +385,34 @@ void check_point(vector<vector<char>>& board, bool expected_val) {
 
     delete mSolution;
 }
+void solveSudoku(vector<vector<char>>& board, vector<vector<char>>& expected_board) {
+    Solution *mSolution = NULL;
+    mSolution = new Solution();
+
+    cout << "With sudoku below " << endl;
+    mSolution->printBoardChar(board);
+
+    mSolution->solveSudoku(board);
+
+    if (expected_board == board) {
+        judment(true);
+    }
+    else {
+        cout << "current value is: " << endl;
+        mSolution->printBoardChar(board);
+
+        cout << "expected value is: " << endl;
+        mSolution->printBoardChar(expected_board);
+        judment(false);
+    }
+
+    delete mSolution;
+}
 
 int main(void)
 {
     vector<vector<char>> board;
+#ifdef CASE_CHECK_VALID
     board.push_back({ '5','3','.','.','7','.','.','.','.' });
     board.push_back({ '6','.','.','1','9','5','.','.','.' });
     board.push_back({ '.','9','8','.','.','.','.','6','.' });
@@ -267,7 +423,7 @@ int main(void)
     board.push_back({ '.','.','.','4','1','9','.','.','5' });
     board.push_back({ '.','.','.','.','8','.','.','7','9' });
 
-    check_point(board, true);
+    isValidSudoku(board, true);
 
     board.erase(board.begin(), board.end());
     board.push_back({ '8','3','.','.','7','.','.','.','.' });
@@ -280,7 +436,33 @@ int main(void)
     board.push_back({ '.','.','.','4','1','9','.','.','5' });
     board.push_back({ '.','.','.','.','8','.','.','7','9' });
 
-    check_point(board, false);
+    isValidSudoku(board, false);
+#else
+    vector<vector<char>> expected_board;
+    board.erase(board.begin(), board.end());
 
+    board.push_back({'5','3','.','.','7','.','.','.','.'});
+    board.push_back({'6','.','.','1','9','5','.','.','.'});
+    board.push_back({'.','9','8','.','.','.','.','6','.'});
+    board.push_back({'8','.','.','.','6','.','.','.','3'});
+    board.push_back({'4','.','.','8','.','3','.','.','1'});
+    board.push_back({'7','.','.','.','2','.','.','.','6'});
+    board.push_back({'.','6','.','.','.','.','2','8','.'});
+    board.push_back({'.','.','.','4','1','9','.','.','5'});
+    board.push_back({'.','.','.','.','8','.','.','7','9'});
+
+    expected_board.erase(expected_board.begin(), expected_board.end());
+    expected_board.push_back({'5','3','4','6','7','8','9','1','2'});
+    expected_board.push_back({'6','7','2','1','9','5','3','4','8'});
+    expected_board.push_back({'1','9','8','3','4','2','5','6','7'});
+    expected_board.push_back({'8','5','9','7','6','1','4','2','3'});
+    expected_board.push_back({'4','2','6','8','5','3','7','9','1'});
+    expected_board.push_back({'7','1','3','9','2','4','8','5','6'});
+    expected_board.push_back({'9','6','1','5','3','7','2','8','4'});
+    expected_board.push_back({'2','8','7','4','1','9','6','3','5'});
+    expected_board.push_back({'3','4','5','2','8','6','1','7','9'});
+
+    solveSudoku(board, expected_board);
+#endif
     return 0;
 }

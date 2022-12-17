@@ -1,7 +1,6 @@
 #include "systemc.h"
 
-class dummy: public sc_module
-{
+class dummy: public sc_module {
     sc_out<bool> dummy_enable;
     sc_out<bool> dummy_preset;
     sc_out<bool> dummy_wr;
