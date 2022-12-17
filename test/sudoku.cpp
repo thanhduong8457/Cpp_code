@@ -7,7 +7,7 @@
 using namespace std;
 
 //#define CASE_CHECK_VALID
-//#define ENABLE_DEBUG
+#define ENABLE_DEBUG
 
 class Solution {
 private:
@@ -240,7 +240,9 @@ public:
         if (false == return_val) {
             return return_val;
         }
-
+#ifdef ENABLE_DEBUG
+        cout << "######## this sudoku valid ########" << endl;
+#endif
         return return_val;
     }
     void solveSudoku(vector<vector<char>>& board) {
@@ -304,35 +306,56 @@ public:
                     }
                 }
             }
-        
+
             for (itValAva = valueAvailable.begin(); itValAva != valueAvailable.end(); itValAva++) {
                 int row = itValAva->first % 10;
                 int colum = (itValAva->first - row) / 10;
 #ifdef ENABLE_DEBUG
-                cout << "with [row][colum] = [" << row << "][" << colum << "] value available is: ";
+                cout << "with [row][colum] = [" << row << "][" << colum << "]" << " in block "<< atWhichInBlock(row, colum) <<" value available is: ";
                 for (int i = 0; i < itValAva->second.size(); i++) {
                     cout << itValAva->second[i] << " ";
                 }
                 cout << endl;
 #endif
                 if (1 == itValAva->second.size()) {
-                    isContinueCaculate = true;
                     boardConvertToInt[row][colum] = itValAva->second[0];
-#ifdef ENABLE_DEBUG
+                    isContinueCaculate = true;
                     board = converToChar(boardConvertToInt); // no need update immediately
+#ifdef ENABLE_DEBUG
+                    cout << "the value available in [row][colum] = [" << row << "][" << colum << "] is unique -> update it to board " << endl;
 #endif
                     boardTransfromFromBlock = transfromFromBlock(boardConvertToInt);
                 }
-                else {
-                    continue;
-                }
-
-                //cout << "with [row][colum] = [" << row << "][" << colum << "] value available is: ";
-                //for (int i = 0; i < itValAva->second.size(); i++) {
-                //    cout << itValAva->second[i] << " ";
-                //}
-                //cout << endl;
             }
+
+            if (false == isContinueCaculate) {
+                for (itValAva = valueAvailable.begin(); itValAva != valueAvailable.end(); itValAva++) {
+                    int row = itValAva->first % 10;
+                    int colum = (itValAva->first - row) / 10;
+                    if (2 == itValAva->second.size()) {
+                        for (int i = 0; i < itValAva->second.size(); i++) {
+                            boardConvertToInt[row][colum] = itValAva->second[i];
+                            board = converToChar(boardConvertToInt);
+#ifdef ENABLE_DEBUG
+                            cout << "Check board is valid? with [row][colum] = [" << row << "][" << colum << "] = " << itValAva->second[i] << endl;
+#endif
+                            if (true == isValidSudoku(board)) {
+                                isContinueCaculate = true;
+                                break;
+                            }
+                            else {
+                                boardConvertToInt[row][colum] = 0;
+                                board = converToChar(boardConvertToInt);
+                            }
+                        }
+                        boardTransfromFromBlock = transfromFromBlock(boardConvertToInt);
+                    }
+                    if (true == isContinueCaculate) {
+                        break;
+                    }
+                }
+            }
+
             valueAvailable.erase(valueAvailable.begin(), valueAvailable.end());
 #ifdef ENABLE_DEBUG
             cout << "board after update" << endl;
@@ -340,9 +363,6 @@ public:
             cout << endl;
 #endif
         }
-#ifndef ENABLE_DEBUG
-        board = converToChar(boardConvertToInt);
-#endif
     }
     void printBoardChar(vector<vector<char>>& board) {
         for (int row = 0; row < board.size(); row++) {
@@ -357,10 +377,14 @@ public:
 
 void judment(bool is_pass) {
     if (true == is_pass) {
-        cout << "This check point is PASS" << endl << endl;
+        cout << "####################################" << endl;
+        cout << "##### This check point is PASS #####" << endl;
+        cout << "####################################" << endl << endl;
     }
     else {
-        cout << "This check point is FAIL" << endl << endl;
+        cout << "####################################" << endl;
+        cout << "##### This check point is FAIL #####" << endl;
+        cout << "####################################" << endl << endl;
         exit(0);
     }
 }
@@ -439,8 +463,10 @@ int main(void)
     isValidSudoku(board, false);
 #else
     vector<vector<char>> expected_board;
-    board.erase(board.begin(), board.end());
 
+    //checkpoint 1
+
+    board.erase(board.begin(), board.end());
     board.push_back({'5','3','.','.','7','.','.','.','.'});
     board.push_back({'6','.','.','1','9','5','.','.','.'});
     board.push_back({'.','9','8','.','.','.','.','6','.'});
@@ -463,6 +489,59 @@ int main(void)
     expected_board.push_back({'3','4','5','2','8','6','1','7','9'});
 
     solveSudoku(board, expected_board);
+
+    //checkpoint 2
+
+    board.erase(board.begin(), board.end());
+    board.push_back({'.','.','9','7','4','8','.','.','.'});
+    board.push_back({'7','.','.','.','.','.','.','.','.'});
+    board.push_back({'.','2','.','1','.','9','.','.','.'});
+    board.push_back({'.','.','7','.','.','.','2','4','.'});
+    board.push_back({'.','6','4','.','1','.','5','9','.'});
+    board.push_back({'.','9','8','.','.','.','3','.','.'});
+    board.push_back({'.','.','.','8','.','3','.','2','.'});
+    board.push_back({'.','.','.','.','.','.','.','.','6'});
+    board.push_back({'.','.','.','2','7','5','9','.','.'});
+
+    expected_board.erase(expected_board.begin(), expected_board.end());
+    expected_board.push_back({'5','1','9','7','4','8','6','3','2'});
+    expected_board.push_back({'7','8','3','6','5','2','4','1','9'});
+    expected_board.push_back({'4','2','6','1','3','9','8','7','5'});
+    expected_board.push_back({'3','5','7','9','8','6','2','4','1'});
+    expected_board.push_back({'2','6','4','3','1','7','5','9','8'});
+    expected_board.push_back({'1','9','8','5','2','4','3','6','7'});
+    expected_board.push_back({'9','7','5','8','6','3','1','2','4'});
+    expected_board.push_back({'8','3','2','4','9','1','7','5','6'});
+    expected_board.push_back({'6','4','1','2','7','5','9','8','3'});
+
+    solveSudoku(board, expected_board);
+
+    //checkpoint 3
+
+    board.erase(board.begin(), board.end());
+    board.push_back({ '.','.','.','2','.','.','.','6','3' });
+    board.push_back({ '3','.','.','.','.','5','4','.','1' });
+    board.push_back({ '.','.','1','.','.','3','9','8','.' });
+    board.push_back({ '.','.','.','.','.','.','.','9','.' });
+    board.push_back({ '.','.','.','5','3','8','.','.','.' });
+    board.push_back({ '.','3','.','.','.','.','.','.','.' });
+    board.push_back({ '.','2','6','3','.','.','5','.','.' });
+    board.push_back({ '5','.','3','7','.','.','.','.','8' });
+    board.push_back({ '4','7','.','.','.','1','.','.','.' });
+
+    expected_board.erase(expected_board.begin(), expected_board.end());
+    expected_board.push_back({ '8','5','4','2','1','9','7','6','3' });
+    expected_board.push_back({ '3','9','7','8','6','5','4','2','1' });
+    expected_board.push_back({ '2','6','1','4','7','3','9','8','5' });
+    expected_board.push_back({ '7','8','5','1','2','6','3','9','4' });
+    expected_board.push_back({ '6','4','9','5','3','8','1','7','2' });
+    expected_board.push_back({ '1','3','2','9','4','7','8','5','6' });
+    expected_board.push_back({ '9','2','6','3','8','4','5','1','7' });
+    expected_board.push_back({ '5','1','3','7','9','2','6','4','8' });
+    expected_board.push_back({ '4','7','8','6','5','1','2','3','9' });
+
+    solveSudoku(board, expected_board);
+
 #endif
     return 0;
 }
