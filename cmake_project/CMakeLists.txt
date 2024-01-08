@@ -5,12 +5,26 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(CMAKE_MODEL_PATH "${PROJECT_SOURCE_DIR}")
+set(LIBRARY_NAME Library)
+set(EXECUTABLE_NAME Executable)
 
-# add_subdirectory(PubSubConnector)
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-set(SOURCES
-    main.cpp
-)
+include(AddGitSubModule) # add define function
+add_git_submodule(external/systemc-2.3.3)
+# include(Docs)
 
-add_executable(demo ${SOURCES})
+# include(FetchContent)
+# FetchContent_Declare(
+#     SystemCLanguage 
+#     GIT_REPOSITORY https://github.com/yoshijava/systemc-2.3.3.git
+#     #GIT_TAG 
+#     GIT_SHALLOW TRUE
+# )
+# FetchContent_MakeAvailable(SystemCLanguage)
+
+add_subdirectory(src)
+
+add_executable(${EXECUTABLE_NAME} main.cpp)
+target_include_directories(${EXECUTABLE_NAME} PUBLIC "src/my_lib" "external/systemc-2.3.3/src")
+target_link_libraries(${EXECUTABLE_NAME} PUBLIC ${LIBRARY_NAME} SystemC::systemc)
