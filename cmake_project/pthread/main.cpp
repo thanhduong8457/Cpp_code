@@ -243,8 +243,7 @@ public:
 
 int main() {
     PULSE_GEN pulseGen;
-
-    pthread_t mainProcessThreadHandle, resetThreadHandle, writeThreadHandle;
+    pthread_t mainProcessThreadHandle, writeThreadHandle;
 
     // Create threads
     pthread_create(&mainProcessThreadHandle, nullptr, &PULSE_GEN::mainProcessThreadWrapper, &pulseGen);
