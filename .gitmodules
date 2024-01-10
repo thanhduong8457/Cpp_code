@@ -1,0 +1,3 @@
+[submodule "cmake_project/demo_systemc/external/systemc-2.3.3"]
+	path = cmake_project/demo_systemc/external/systemc-2.3.3
+	url = https://github.com/yoshijava/systemc-2.3.3.git

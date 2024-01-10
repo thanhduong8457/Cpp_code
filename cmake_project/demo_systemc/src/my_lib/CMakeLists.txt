@@ -8,8 +8,8 @@ set(LIBRARY_HEADERS
 
 set(LIBRARY_INCLUDES
     "./"
-    "$(CMAKE_BINARY_DIR)/configure_files/include"
-    "$(CMAKE_BINARY_DIR)/external/systemc-2.3.3/src"
+    # "$(CMAKE_BINARY_DIR)/configure_files/include"
+    # "$(CMAKE_BINARY_DIR)/external/systemc-2.3.3/src"
 )
 
 add_library(${LIBRARY_NAME} STATIC
