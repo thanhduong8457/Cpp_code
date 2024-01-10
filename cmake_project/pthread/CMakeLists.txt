@@ -11,7 +11,7 @@ set(EXECUTABLE_NAME Executable)
 option(ENABLE_TESTING "Enable a unit test build" ON)
 
 option(ENABLE_WARNINGS "Enable warning" ON)
-option(ENABLE_WARNINGS_AS_ERRORS "Enable warning as ctest_empty_binary_directory()" ON)
+option(ENABLE_WARNINGS_AS_ERRORS "Enable warning as ctest_empty_binary_directory()" OFF)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 

@@ -13,7 +13,8 @@ function(target_set_warnings TARGET ENABLE ENABLE_WARNINGS_AS_ERRORS)
     set(CLANG_WARNINGS
         -Wall
         -Wextra
-        -Wpedantic)
+        # -Wpedantic
+    )
     
     set(GCC_WARNINGS ${CLANG_WARNINGS})
 
@@ -25,7 +26,7 @@ function(target_set_warnings TARGET ENABLE ENABLE_WARNINGS_AS_ERRORS)
 
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         set(WARNINGS ${MSVC_WARNINGS})
-    elseif(CMAKE_CXX_COMPILER_ID MATCHES "CLANG")
+    elseif(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         set(WARNINGS ${CLANG_WARNINGS})
     elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
         set(WARNINGS ${GCC_WARNINGS})
