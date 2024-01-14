@@ -245,6 +245,9 @@ int main() {
     PULSE_GEN pulseGen;
     pthread_t mainProcessThreadHandle, writeThreadHandle;
 
+    // int x[2];
+    // x[2] = 13413; // for test sanitizer tool
+
     // Create threads
     pthread_create(&mainProcessThreadHandle, nullptr, &PULSE_GEN::mainProcessThreadWrapper, &pulseGen);
     // pthread_create(&resetThreadHandle, nullptr, &PULSE_GEN::resetThreadWrapper, &pulseGen);
