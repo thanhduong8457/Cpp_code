@@ -1,18 +1,20 @@
 {
   "configurations": [
-    {
-      "name": "windows-gcc-x64",
-      "includePath": [
-        "${workspaceFolder}/**"
-      ],
-      "compilerPath": "C:/Strawberry/c/bin/gcc.exe",
-      "cStandard": "${default}",
-      "cppStandard": "${default}",
-      "intelliSenseMode": "windows-gcc-x64",
-      "compilerArgs": [
-        ""
-      ]
-    }
+      {
+          "name": "macos-clang-arm64",
+          "includePath": [
+              "${workspaceFolder}/**",
+              "/Users/thanhduong/Documents/Code_Development/libs/systemc-2.3.3/src",
+              "/Users/thanhduong/.pyenv/versions/2.7.18/include/python2.7"
+          ],
+          "compilerPath": "/usr/bin/clang",
+          "cStandard": "${default}",
+          "cppStandard": "${default}",
+          "intelliSenseMode": "macos-clang-arm64",
+          "compilerArgs": [
+              ""
+          ]
+      }
   ],
   "version": 4
 }

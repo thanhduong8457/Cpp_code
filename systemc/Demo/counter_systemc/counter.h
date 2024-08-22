@@ -1,26 +1,38 @@
 #include "systemc.h"
 
-SC_MODULE(counter)
-{
-	sc_in<bool>	clk;
+class counter : sc_module {
+public:
+	sc_in<sc_uint<64> >	clk;
 	sc_in<bool> enable;
+	sc_in<bool> reset;
 	sc_in<bool> pulse;
 	sc_out< sc_uint<16> > count;
 
-	sc_event e1;
+	SC_HAS_PROCESS(counter);
+	counter(sc_module_name name);
+	~counter();
+private:
+	sc_event updateOuputEvent;
+	sc_event handleResetEvent;
 
-	uint16_t temp;
+	double clockPeriod;
+
+	bool isZeroClock;
+	bool isInReset;
+
+	double timeStartOperation;
+
+	uint16_t counterTemp;
+
+	void initialize();
 	void main_counter();
 	void wait_ena();
 	void show_data();
 
-	SC_CTOR(counter)
-	{
-		temp = 0;
-		SC_METHOD(main_counter);
-		sensitive << clk.pos();
-
-		SC_METHOD(show_data);
-		sensitive << clk.pos();	
-	}
+	void monitorClockMethod();
+	void monitorResetMethod();
+	void handleResetMethod();
+	void MonitorPulseEdgeMethod();
+	void updateOutputThread();
+	double nextPosEdge();
 };
