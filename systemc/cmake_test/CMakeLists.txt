@@ -8,10 +8,13 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(LIBRARY_NAME Library)
 set(EXECUTABLE_NAME Executable)
 
+set(SYSTEMC_INC_DIR /Users/thanhduong/Documents/Code_Development/libs/systemc-2.3.3/src)
+set(SYSTEMC_LIB_DIR /Users/thanhduong/Documents/Code_Development/libs/systemc-2.3.3/build/src/libsystemc.dylib)
+
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
-include(AddGitSubModule) # add define function
-add_git_submodule(external/systemc-2.3.3)
+# include(AddGitSubModule) # add define function
+# add_git_submodule(external/systemc-2.3.3)
 # include(Docs)
 
 # include(FetchContent)
@@ -26,5 +29,12 @@ add_git_submodule(external/systemc-2.3.3)
 add_subdirectory(src)
 
 add_executable(${EXECUTABLE_NAME} main.cpp)
-target_include_directories(${EXECUTABLE_NAME} PUBLIC "src/my_lib" "external/systemc-2.3.3/src")
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC ${LIBRARY_NAME} SystemC::systemc)
+target_include_directories(${EXECUTABLE_NAME} PUBLIC 
+    ${SYSTEMC_INC_DIR}
+)
+
+target_link_libraries(${EXECUTABLE_NAME} PUBLIC 
+    ${LIBRARY_NAME} 
+    ${SYSTEMC_LIB_DIR}
+    ${PYTHON_LIB_DIR}
+)

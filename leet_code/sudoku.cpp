@@ -7,7 +7,7 @@
 using namespace std;
 
 //#define CASE_CHECK_VALID
-//#define ENABLE_DEBUG
+#define ENABLE_DEBUG
 
 class Solution {
 private:

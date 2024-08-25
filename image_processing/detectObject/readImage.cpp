@@ -7,11 +7,8 @@ using namespace std;
 int main(int argc, char** argv)
 {
     cv::Mat image;
-#ifdef WINDOW_DEBUG
-    image = cv::imread("C:\\Users\\duong.le-thanh\\Documents\\my_code\\image_processing\\demo\\input\\bb.PNG", cv::IMREAD_COLOR);
-#else
-    image = cv::imread("../images/bb.PNG", cv::IMREAD_COLOR);
-#endif
+    image = cv::imread("/Users/thanhduong/Pictures/NinhThuan/_DSC0011.JPG", cv::IMREAD_COLOR);
+
 
     if (!image.data) {
         std::cout << "Image not found or unable to open" << std::endl;
