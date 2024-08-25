@@ -33,9 +33,9 @@ int sc_main(int argc, char* argv[]) {
 	sc_set_time_resolution(1, SC_PS);
 
 	// Start simulation
-	sc_start(100, SC_NS);// run indefinitely
+	sc_start(1, SC_NS);// run indefinitely
 
-	clk.write(1000000000);
+	clk.write(10000000);
 	reset.write(false);
 	enable.write(true);
 
@@ -57,9 +57,39 @@ int sc_main(int argc, char* argv[]) {
 	sc_start(1, SC_NS);// run indefinitely
 
 	pulse.write(true);
+	sc_start(0.2, SC_NS);// run indefinitely
+	pulse.write(false);
+	sc_start(1, SC_NS);// run indefinitely
+
+	pulse.write(true);
 	sc_start(1, SC_NS);// run indefinitely
 	pulse.write(false);
-	sc_start(0.1, SC_NS);// run indefinitely
+	sc_start(3, SC_NS);// run indefinitely
+
+	enable.write(false);
+
+	pulse.write(true);
+	sc_start(1, SC_NS);// run indefinitely
+	pulse.write(false);
+	sc_start(3, SC_NS);// run indefinitely
+
+	pulse.write(true);
+	sc_start(1, SC_NS);// run indefinitely
+	pulse.write(false);
+	sc_start(3, SC_NS);// run indefinitely
+
+	enable.write(true);
+
+	pulse.write(true);
+	sc_start(1, SC_NS);// run indefinitely
+	pulse.write(false);
+	sc_start(3, SC_NS);// run indefinitely
+
+	pulse.write(true);
+	sc_start(1, SC_NS);// run indefinitely
+	pulse.write(false);
+	sc_start(3, SC_NS);// run indefinitely
+
 
 	sc_close_vcd_trace_file(pTraceFile);
 	return 0;

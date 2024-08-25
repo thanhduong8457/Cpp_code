@@ -3,51 +3,53 @@
 #if !defined(_PULSE_GEN_H)
 #define _PULSE_GEN_H
 
-class PULSE_GEN : public sc_module
-{
+class pulse_gen : public sc_module {
 public:
-    SC_HAS_PROCESS(PULSE_GEN);
-    PULSE_GEN(sc_module_name name);
-    ~PULSE_GEN(void);
-
-    sc_clock CLK;
-    sc_in< bool > ENABLE;
-    sc_in< bool > PRESET;
-    sc_in< bool > WR;
+    sc_in< sc_dt::uint64 > clk;
+    sc_in< bool > enable;
+    sc_in< bool > reset;
+    sc_in< bool > write;
     sc_in< sc_dt::uint64 > N;
     sc_in< sc_dt::uint64 > Nx;
 
-    sc_out<bool> PULSE_X_OUT;
-    sc_out<bool> DIR_X;
-    sc_out<bool> FLAG;
-    sc_out<bool> CLK1;
+    sc_out<bool> pulse_out;
 
-    sc_event fulled;
-    sc_event flag;
+    SC_HAS_PROCESS(pulse_gen);
+    pulse_gen(sc_module_name name);
+    ~pulse_gen(void);
 
-    void init(void);
+private:
+    std::deque<unsigned int> buffer_x;
+    unsigned int inN;
+    unsigned int inNx;
+    unsigned int acc_x;
+    bool pin_x_out;
 
-    void count(void);
-    void main_pulse(void);
+    bool isZeroClock;
+    bool isReset;
+    bool isNotInOperation;
+
+    sc_uint<64> clockPeriod;
+    double timeStartOperation;
+
+    sc_event catchValueEvent;
+    sc_event start_operation_event;
+
+    sc_process_handle main_process_thread_handle ;
+
+    void initialize(void);
+
     void main_process_thread(void);
 
     void handle_reset_method(void);
     void write_method(void);
     void catch_value(void);
 
-private:
-    unsigned int counter;
-    unsigned int a;
-    unsigned int buffer_x[10];
-    unsigned int inN;
-    unsigned int inNx;
-    unsigned int acc_x;
-    unsigned int temp_flag;
-    bool clk1;
-    bool pin_x_out;
-    bool dir_x_out;
-    bool enable_handler;
-    bool preset_handler;
+    void monitorClockMethod(void);
+
+    void cancelAllEvent(void);
+    double nextPosEdge(void);
+    void get_value_method(void);
 };
 
 #endif  //_PULSE_GEN_H

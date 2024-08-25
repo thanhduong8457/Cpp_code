@@ -1,148 +1,185 @@
-#include "PULSE_GEN.h"
+#include "pulse_gen.h"
 
-PULSE_GEN::PULSE_GEN(sc_module_name name):sc_module(name)
-    , CLK("CLK")
-    , ENABLE("ENABLE")
-    , WR("WR")
-    , PRESET("PRESET")
-    , PULSE_X_OUT("PULSE_X_OUT")
-    , DIR_X("DIR_X")
+pulse_gen::pulse_gen(sc_module_name name):sc_module(name)
+    , clk("clk")
+    , enable("enable")
+    , write("write")
+    , reset("reset")
+    , pulse_out("pulse_out")
 {
     // Initialize variables
 
-    counter = 0;
-    a = 0;
-    for (int i = 0; i < 10; i++) buffer_x[i] = 0;
+    while (buffer_x.size() != 0) {
+        buffer_x.pop_back();
+    }
+
     inN = 0;
     inNx = 0;
     acc_x = 0;
-    temp_flag = 0;
-    clk1 = 0;
     pin_x_out = 0;
-    dir_x_out = 0;
-    enable_handler = 0;
-    preset_handler = 0;
 
-    PULSE_X_OUT.initialize(false);
-    DIR_X.initialize(false);
+    pulse_out.initialize(false);
 
     SC_METHOD(handle_reset_method);
     dont_initialize();
-    sensitive << PRESET.pos();
+    sensitive << reset;
 
     SC_METHOD(write_method);
     dont_initialize();
-    sensitive << WR.pos();
+    sensitive << write;
 
-    SC_CTHREAD(main_process_thread, CLK);
+    SC_METHOD(get_value_method);
     dont_initialize();
+    sensitive << catchValueEvent;
+
+    SC_METHOD(monitorClockMethod);
+	dont_initialize();
+	sensitive << clk;	
+
+    SC_THREAD(main_process_thread);
+    main_process_thread_handle = sc_get_current_process_handle();
 }
 
-void PULSE_GEN::main_process_thread(void)
-{
-    count();
-    main_pulse();
+/// @brief 
+/// @param  
+pulse_gen::~pulse_gen(void) {
+    //
 }
 
-void PULSE_GEN::count(void)
-{
-    enable_handler = ENABLE.read();
+/// @brief 
+/// @param  
+void pulse_gen::main_process_thread(void) {
+    unsigned temp_a = 0;
 
-    if (PRESET.read()) preset_handler = false;
-    else preset_handler = true;
+    while (true) {
+        isNotInOperation = true;
+        wait(start_operation_event);
 
-    if (enable_handler&&preset_handler)
-    {
-        counter++;
+        if ((false == isZeroClock) && (false == isReset) && (true == enable.read())) {
+            isNotInOperation = false;
+            catch_value();
+            acc_x = inNx;
 
-        if (counter > 100)
-        {
-            counter = 0;
-            fulled.notify(SC_ZERO_TIME);
+            for (unsigned int i = 0; i < inN; i++) {
+                acc_x += inNx;
+
+                if (acc_x >= inN) {
+                    acc_x -= inN;
+                    pulse_out.write(true);
+                }
+                else {
+                    pulse_out.write(false);
+                }
+                wait(nextPosEdge()/2, SC_NS);
+                pulse_out.write(false);
+
+                start_operation_event.notify(nextPosEdge()/2, SC_NS);
+                wait(start_operation_event);
+            }
+
+            if (0 != buffer_x.size()) {
+                start_operation_event.notify(nextPosEdge(), SC_NS);
+            } 
         }
-
-        if (counter <= 50) clk1 = 1;
-        else clk1 = 0;
-
-        if (counter == 50) CLK1.write(1);
-        else if (counter == 100) CLK1.write(0);
-
-        PULSE_X_OUT.write(~clk1&pin_x_out);
-        DIR_X.write(dir_x_out);
-    }
-    else
-    {
-        PULSE_X_OUT.write(0);
-        DIR_X.write(0);
-        FLAG.write(0);
-        CLK1.write(0);
     }
 }
 
-void PULSE_GEN::main_pulse()
-{
-    temp_flag++;
-
-    if (temp_flag <= inN) FLAG.write(1);
-    else FLAG.write(0);
-
-    if (temp_flag == inN || temp_flag == 2 * inN) catch_value();
-
-    if (temp_flag >= 2 * inN) temp_flag = 0;
-
-    acc_x += inNx;
-
-    if (acc_x >= inN)
-    {
-        acc_x -= inN;
-        pin_x_out = 1;
+/// @brief 
+/// @param  
+void pulse_gen::handle_reset_method(void) {
+    if (false == reset.read()) {
+        isReset = true;
+        std::cout << "reset assert" << std::endl;
+    } 
+    else {
+        initialize();
+        isReset = false;
+        cancelAllEvent();
+        std::cout << "reset deassert" << std::endl;
     }
-    else pin_x_out = 0;
 }
 
-void PULSE_GEN::handle_reset_method()
-{
-    counter = 0;
-    temp_flag = 0;
+void pulse_gen::cancelAllEvent(void) {
 
+}
+
+/// @brief 
+/// @param  
+void pulse_gen::monitorClockMethod(void) {
+	unsigned int period = clk.read();
+	
+	if (0x0 == period) {
+		isZeroClock = true;
+		clockPeriod = 0x0;
+        main_process_thread_handle.suspend();
+	} 
+	else {
+		isZeroClock = false;
+		clockPeriod = period;
+		cout << " clock is " << clockPeriod << endl;
+		timeStartOperation = sc_time_stamp().to_double();
+		cout << " start time of module is " << timeStartOperation << endl;
+
+        main_process_thread_handle.resume();
+	}
+}
+
+/// @brief 
+/// @param  
+/// @return 
+double pulse_gen::nextPosEdge(void) {
+	double return_value = 0x0;
+	double current_time = sc_time_stamp().to_double();
+	double period = (double)1/clockPeriod * 10e+9;
+	return_value = period - (unsigned)(current_time - timeStartOperation) % (unsigned)period;
+	return return_value;
+}
+
+/// @brief 
+/// @param  
+void pulse_gen::write_method(void) {
+    if (true == write.read()) {
+        double next_pos_edge = nextPosEdge();
+        catchValueEvent.notify(next_pos_edge, SC_NS);
+        cout << "write_method trigger" << endl;
+    }
+}
+
+/// @brief 
+/// @param  
+void pulse_gen::get_value_method(void) {
+    sc_uint<64> temp_val = Nx.read();
+    if ((false == isZeroClock) && (false == isReset) && (true == enable.read())) {
+        buffer_x.push_back(temp_val); // check
+        start_operation_event.notify(SC_ZERO_TIME);
+        std::cout << "get value" << std::endl;
+    }
+}
+
+/// @brief 
+/// @param  
+void pulse_gen::catch_value(void) {
+    inN = N.read();
+
+    if (0 != buffer_x.size()) {
+        inNx = buffer_x[0];
+        buffer_x.pop_front();
+        if (inNx > inN) {
+            inNx = inN;
+        }
+    }
+}
+
+/// @brief 
+/// @param  
+void pulse_gen::initialize(void) {
     inNx = 0;
     acc_x = 0;
+    isNotInOperation = false;
 
-    clk1 = false;
     pin_x_out = false;
-    dir_x_out = false;
 
-    for (int i = 0; i < 10; i++) buffer_x[i] = 0;
-}
-
-void PULSE_GEN::write_method()
-{
-    a++;
-    if (a > 10) a = 10;
-    buffer_x[a - 1] = Nx.read();
-}
-
-void PULSE_GEN::catch_value()
-{
-    inN = N.read();
-    inNx = buffer_x[0];
-
-    if (inNx > 10) inNx = 10;
-
-    for (int i = 0; i < a; i++) buffer_x[i] = buffer_x[i + 1];
-
-    if (--a < 0) a = 0;
-
-    buffer_x[a] = 0;
-}
-
-void PULSE_GEN::init()
-{
-    catch_value();
-    acc_x = inNx;
-}
-
-PULSE_GEN::~PULSE_GEN(void)
-{
-
+    while (buffer_x.size() != 0) {
+        buffer_x.pop_back();
+    }
 }

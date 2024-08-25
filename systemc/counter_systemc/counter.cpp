@@ -66,8 +66,6 @@ void counter::monitorResetMethod() {
 	else {
 		isInReset = false;
 		cout << " reset is release" << endl;
-		timeStartOperation = sc_time_stamp().to_double();
-		cout << " start time of module is " << timeStartOperation << endl;
 	}
 }
 
@@ -78,6 +76,7 @@ void counter::handleResetMethod() {
 
 void counter::MonitorPulseEdgeMethod() {
 	if (false == pulse.read()) {
+		cout << "pulse down" << endl;
 		if ((false == isZeroClock) && (false == isInReset) && (true == enable.read())) {
 			counterTemp += 1;
 			updateOuputEvent.notify(SC_ZERO_TIME);
@@ -95,7 +94,9 @@ void counter::updateOutputThread() {
 }
 
 double counter::nextPosEdge() {
+	double return_value = 0x0;
 	double current_time = sc_time_stamp().to_double();
 	double period = 1/clockPeriod * 10e+9;
-	return period - (unsigned)(current_time - timeStartOperation) % (unsigned)period;
+	return_value = period - (unsigned)(current_time - timeStartOperation) % (unsigned)period;
+	return return_value;
 }
