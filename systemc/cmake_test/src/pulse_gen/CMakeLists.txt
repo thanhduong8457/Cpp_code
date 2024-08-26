@@ -1,4 +1,4 @@
-set(LIBRARY_NAME design)
+set(LIBRARY_NAME pulse_gen)
 
 file(GLOB_RECURSE LIBRARY_SOURCES FOLLOW_SYMLINKS
     *.cpp
