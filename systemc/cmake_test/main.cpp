@@ -181,3 +181,7 @@ int sc_main(int argc, char* argv[]) {
 	sc_close_vcd_trace_file(pTraceFile);
 	return 0;
 }// end sc_main()
+
+void demo_example() {
+	cout << "this is the demo merge code" << endl;
+}
