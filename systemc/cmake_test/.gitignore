@@ -38,9 +38,12 @@ _ReSharper*/
 
 # Project files
 [Bb]uild/
+_build/
 
 # Subversion files
 .svn
 
 # Microsoft Office temporary files
 ~$*
+
+systemc-2.3.3
