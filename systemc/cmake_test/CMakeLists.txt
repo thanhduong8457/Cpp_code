@@ -36,4 +36,5 @@ target_include_directories(${EXECUTABLE_NAME} PUBLIC
 target_link_libraries(${EXECUTABLE_NAME} PUBLIC 
     ${LIBRARY_NAME} 
     ${SYSTEMC_LIB_DIR}
+    pulse_gen
 )
