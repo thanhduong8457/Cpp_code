@@ -181,3 +181,8 @@ int sc_main(int argc, char* argv[]) {
 	sc_close_vcd_trace_file(pTraceFile);
 	return 0;
 }// end sc_main()
+
+void function_test() {
+	// this is a test
+	cout << "this is the demo" << endl;
+}
