@@ -185,3 +185,8 @@ int sc_main(int argc, char* argv[]) {
 void demo_example() {
 	cout << "this is the demo merge code" << endl;
 }
+
+void function_test() {
+	// this is a test
+	cout << "this is the demo" << endl;
+}

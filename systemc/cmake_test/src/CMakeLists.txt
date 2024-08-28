@@ -1,2 +1,2 @@
-add_subdirectory(my_lib)
+add_subdirectory(design)
 add_subdirectory(pulse_gen)
