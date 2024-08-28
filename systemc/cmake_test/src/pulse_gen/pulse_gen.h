@@ -17,7 +17,7 @@ public:
 
     SC_HAS_PROCESS(pulse_gen);
     pulse_gen(sc_module_name name);
-    virtual ~pulse_gen(void);
+    ~pulse_gen(void);
 
 private:
     std::deque<unsigned int> buffer_x;

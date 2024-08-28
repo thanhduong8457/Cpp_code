@@ -5,7 +5,6 @@ set(CMAKE_CXX_STANDARD 14 CACHE STRING "C++ standard to be used")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-set(LIBRARY_NAME Library)
 set(EXECUTABLE_NAME Executable)
 
 set(SYSTEMC_INC_DIR ${PROJECT_SOURCE_DIR}/external/systemc-2.3.3/src)
@@ -29,12 +28,15 @@ add_git_submodule(external/systemc-2.3.3)
 add_subdirectory(src)
 
 add_executable(${EXECUTABLE_NAME} main.cpp)
+
 target_include_directories(${EXECUTABLE_NAME} PUBLIC 
+    src/pulse_gen
+    src/design
     ${SYSTEMC_INC_DIR}
 )
 
 target_link_libraries(${EXECUTABLE_NAME} PUBLIC 
-    ${LIBRARY_NAME} 
-    ${SYSTEMC_LIB_DIR}
     pulse_gen
+    design
+    ${SYSTEMC_LIB_DIR}
 )
