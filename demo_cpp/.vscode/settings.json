@@ -1,11 +1,11 @@
 {
   "cmake.debugConfig": {
-    "cwd": "${workspaceFolder}/debug",
+    "cwd": "${workspaceFolder}",
       "args": [
         ">",
         "log.log"
       ],
-      "externalConsole": true
+      "externalConsole": false
   },
   "files.associations": {
     "vector": "cpp",
