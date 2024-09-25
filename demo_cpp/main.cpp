@@ -1,92 +1,59 @@
+#include <openssl/aes.h>
+#include <cstring>
 #include <iostream>
-#include <list>
-#include <queue>
-#include <vector>
 
-// Graph class definition using adjacency list
-class Graph {
-private:
-    int vertices;               // Number of vertices
-    std::list<int> *adjList;    // Pointer to an array containing adjacency lists
+// Function to encrypt a 128-bit block using AES-128 ECB mode
+void AES128_ECB_encrypt(const unsigned char *input, unsigned char *output, const unsigned char *key) {
+    AES_KEY aesKey;
+    // Set encryption key (128-bit)
+    AES_set_encrypt_key(key, 128, &aesKey);
+    
+    // Perform AES encryption on the input block (128-bit)
+    AES_ecb_encrypt(input, output, &aesKey, AES_ENCRYPT);
+}
 
-public:
-    // Constructor to initialize the graph
-    Graph(int v) {
-        vertices = v;
-        adjList = new std::list<int>[v];
-    }
+// Function to decrypt a 128-bit block using AES-128 ECB mode
+void AES128_ECB_decrypt(const unsigned char *input, unsigned char *output, const unsigned char *key) {
+    AES_KEY aesKey;
+    // Set decryption key (128-bit)
+    AES_set_decrypt_key(key, 128, &aesKey);
 
-    // Destructor to delete the adjacency list
-    ~Graph() {
-        delete[] adjList;
-    }
-
-    // Add an edge to the graph (undirected by default)
-    void addEdge(int v, int w) {
-        adjList[v].push_back(w);  // Add w to v's list
-        adjList[w].push_back(v);  // Add v to w's list (for undirected graph)
-    }
-
-    // BFS traversal from a given source node
-    void BFS(int startVertex) {
-        // Mark all vertices as not visited
-        std::vector<bool> visited(vertices, false);
-
-        // Create a queue for BFS
-        std::queue<int> queue;
-
-        // Mark the starting vertex as visited and enqueue it
-        visited[startVertex] = true;
-        queue.push(startVertex);
-
-        while (!queue.empty()) {
-            // Dequeue a vertex from the queue and print it
-            int currentVertex = queue.front();
-            std::cout << currentVertex << " ";
-            queue.pop();
-
-            // Get all adjacent vertices of the dequeued vertex
-            // If an adjacent has not been visited, mark it visited and enqueue it
-            for (auto it = adjList[currentVertex].begin(); it != adjList[currentVertex].end(); ++it) {
-                if (!visited[*it]) {
-                    visited[*it] = true;
-                    queue.push(*it);
-                }
-            }
-        }
-        std::cout << std::endl;
-    }
-
-    // Print the graph (for debugging purposes)
-    void printGraph() {
-        for (int i = 0; i < vertices; i++) {
-            std::cout << "Vertex " << i << " is connected to: ";
-            for (auto v : adjList[i]) {
-                std::cout << v << " ";
-            }
-            std::cout << std::endl;
-        }
-    }
-};
+    // Perform AES decryption on the input block (128-bit)
+    AES_ecb_encrypt(input, output, &aesKey, AES_DECRYPT);
+}
 
 int main() {
-    // Create a graph object with 5 vertices
-    Graph graph(5);
+    // 128-bit key (16 bytes)
+    unsigned char key[16] = {0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6,
+                             0xab, 0xf7, 0x5f, 0x19, 0x0b, 0x6a, 0x7b, 0x4d};
 
-    // Add edges to the graph
-    graph.addEdge(0, 1);
-    graph.addEdge(0, 4);
-    graph.addEdge(1, 2);
-    graph.addEdge(1, 3);
-    graph.addEdge(1, 4);
-    graph.addEdge(2, 3);
-    graph.addEdge(3, 4);
+    // 128-bit input block (16 bytes)
+    unsigned char input[16] = {0x32, 0x43, 0xf6, 0xa8, 0x88, 0x5a, 0x30, 0x8d,
+                               0x31, 0x31, 0x98, 0xa2, 0xe0, 0x37, 0x07, 0x34};
 
-    // Print the graph
-    graph.printGraph();
+    unsigned char encrypted[16];
+    unsigned char decrypted[16];
 
-    std::cout << "BFS starting from vertex 0: ";
-    graph.BFS(0); // Perform BFS starting from vertex 0
+    std::cout << "Original Input:\n";
+    for (int i = 0; i < 16; i++)
+        std::cout << std::hex << static_cast<int>(input[i]) << " ";
+    std::cout << "\n";
+
+    // Encrypt
+    AES128_ECB_encrypt(input, encrypted, key);
+
+    std::cout << "Encrypted Output:\n";
+    for (int i = 0; i < 16; i++)
+        std::cout << std::hex << static_cast<int>(encrypted[i]) << " ";
+    std::cout << "\n";
+
+    // Decrypt
+    AES128_ECB_decrypt(encrypted, decrypted, key);
+
+    std::cout << "Decrypted Output:\n";
+    for (int i = 0; i < 16; i++)
+        std::cout << std::hex << static_cast<int>(decrypted[i]) << " ";
+    std::cout << "\n";
 
     return 0;
 }
