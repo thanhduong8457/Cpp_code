@@ -17,32 +17,18 @@ using namespace std::chrono;           // nanoseconds, system_clock, seconds
 #define tan60 1.732050808
 #define sin30 0.5
 #define tan30 0.5773502692
-#define sqrt3 1.732050808
-#define pi 3.141592654
-#define sin120 0.8660254038
-#define cos120 -0.5
-#define tan60 1.732050808
-#define sin30 0.5
-#define tan30 0.5773502692
 
 #define ee 86.5  // endeffector
 #define ff 346.4 // base
 #define re 465   // endeffector arm
 #define rf 200   // Base arm
-#define ee 86.5  // endeffector
-#define ff 346.4 // base
-#define re 465   // endeffector arm
-#define rf 200   // Base arm
 
-#define mmtm 0.001
-#define dtr (pi / 180)
 #define mmtm 0.001
 #define dtr (pi / 180)
 
 typedef struct data_point {
     double zz;
     double rr;
-} data_point_t;
 } data_point_t;
 
 std::vector<data_point_t *> m_my_data;
@@ -68,7 +54,6 @@ int main(void) {
     data_point mydata;
 
     theta_1 = 0;
-    theta_1 = 0;
     theta_2 = 0;
     theta_3 = 0;
 
@@ -83,24 +68,20 @@ int main(void) {
         is_not_exit = true;
         r = 0;
 
-        while (is_not_exit)
-        {
+        while (is_not_exit) {
             r++;
             cout << "increase r value: " << r << endl;
             for (int phi = 0; phi <= 360; phi++) {
-                rx = r * cos(phi * dtr);
                 ry = r * sin(phi * dtr);
                 delta_calcInverse(rx, ry, z_test, theta_1, theta_2, theta_3);
                 cout << theta_1 << " " << theta_2 << " " << theta_3 << endl;
                 if (theta_1 < 0 || theta_2 < 0 || theta_3 < 0) {
                     is_not_exit = false;
                     cout << "theta<0" << endl;
-                    cout << "theta<0" << endl;
                     break;
                 }
             }
         }
-
 
         add_data(z_test, r);
     }
@@ -109,11 +90,6 @@ int main(void) {
         cout << "With z = " << m_my_data[i]->zz << " we have rmax = " << m_my_data[i]->rr << endl;
     }
 
-    // cout<<"theta_1: "<<theta_1<<" theta_2: "<<theta_2<<" theta_3: "<<theta_3<<endl;
-
-    // cout<<"theta_1: "<<theta_1<<" theta_2: "<<theta_2<<" theta_3: "<<theta_3<<endl;
-
-    return 0;
     return 0;
 }
 
@@ -124,8 +100,6 @@ int main(void) {
 /// @return 
 double delta_calcAngleYZ(double x0, double y0, double z0) {
     double y1 = -0.5 * 0.57735 * ff; // f/2 * tg 30
-    y0 -= 0.5 * 0.57735 * ee;        // shift center to edge
-                                     // z = a + b*y
     y0 -= 0.5 * 0.57735 * ee;        // shift center to edge
                                      // z = a + b*y
     double a = (x0 * x0 + y0 * y0 + z0 * z0 + rf * rf - re * re - y1 * y1) / (2 * z0);
@@ -145,11 +119,8 @@ double delta_calcAngleYZ(double x0, double y0, double z0) {
 
 // inverse kinematics: (x0, y0, z0) -> (theta1, theta2, theta3)
 // returned status: 0=OK, -1=non-existing position
-void delta_calcInverse(double x0, double y0, double z0, double &theta1, double &theta2, double &theta3)
-{
+void delta_calcInverse(double x0, double y0, double z0, double &theta1, double &theta2, double &theta3) {
     theta1 = delta_calcAngleYZ(x0, y0, z0);
-    theta2 = delta_calcAngleYZ(x0 * cos120 + y0 * sin120, y0 * cos120 - x0 * sin120, z0); // rotate  to +119 deg
-    theta3 = delta_calcAngleYZ(x0 * cos120 - y0 * sin120, y0 * cos120 + x0 * sin120, z0); // rotate to -120 deg
     theta2 = delta_calcAngleYZ(x0 * cos120 + y0 * sin120, y0 * cos120 - x0 * sin120, z0); // rotate  to +119 deg
     theta3 = delta_calcAngleYZ(x0 * cos120 - y0 * sin120, y0 * cos120 + x0 * sin120, z0); // rotate to -120 deg
 }
