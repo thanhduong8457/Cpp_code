@@ -2,6 +2,8 @@
 #include <cstring>
 #include <iostream>
 
+// test update the line
+
 // Function to encrypt a 128-bit block using AES-128 ECB mode
 void AES128_ECB_encrypt(const unsigned char *input, unsigned char *output, const unsigned char *key) {
     AES_KEY aesKey;
