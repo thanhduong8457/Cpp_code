@@ -8,13 +8,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Find OpenSSL
-find_package(OpenSSL REQUIRED)
+# find_package(OpenSSL REQUIRED)
 
 # Add the executable
-add_executable(${EXECUTABLE_NAME} main.cpp)
+add_executable(${EXECUTABLE_NAME} delataRobotTest.cpp delta_robot.cpp common.cpp)
 
 # Link OpenSSL libraries
-target_link_libraries(${EXECUTABLE_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+# target_link_libraries(${EXECUTABLE_NAME} PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 
 # Include directories for the project and OpenSSL
 target_include_directories(${EXECUTABLE_NAME} PUBLIC

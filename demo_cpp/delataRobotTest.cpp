@@ -6,25 +6,28 @@
 #include <thread>
 #include "vector"
 
+#include "delta_define.h"
+#include "delta_robot.h"
+
 using namespace std;
 using namespace std::this_thread; // sleep_for, sleep_until
-using namespace std::chrono; // nanoseconds, system_clock, seconds
+using namespace std::chrono;      // nanoseconds, system_clock, seconds
 
-#define sqrt3   1.732050808
-#define pi      3.141592654
-#define sin120  0.8660254038
-#define cos120  -0.5
-#define tan60   1.732050808
-#define sin30   0.5
-#define tan30   0.5773502692
+#define sqrt3 1.732050808
+#define pi 3.141592654
+#define sin120 0.8660254038
+#define cos120 -0.5
+#define tan60 1.732050808
+#define sin30 0.5
+#define tan30 0.5773502692
 
-#define ee      86.5       // endeffector 
-#define ff      346.4      // base
-#define re      465        // endeffector arm
-#define rf      200        // Base arm
+#define ee 86.5  // endeffector
+#define ff 346.4 // base
+#define re 465   // endeffector arm
+#define rf 200   // Base arm
 
-#define mmtm    0.001
-#define dtr     (pi/180)
+#define mmtm 0.001
+#define dtr (pi / 180)
 
 double theta_1, theta_2, theta_3;
 double x, y, z;
@@ -35,115 +38,131 @@ void delta_calcForward(double theta1, double theta2, double theta3, double &x0, 
 void test_direct();
 void test_inverse();
 
-int main()
-{
-	// test_inverse();
+delta_robot *m_delta_robot;
+double position_value[13];
+double delta;
 
-	test_direct();
+int main() {
+    // // test_inverse();
+    // test_direct();
 
-	// theta_1 = 0;
-    // theta_2 = 0;
-    // theta_3 = 0;
+    // // theta_1 = 0;
+    // // theta_2 = 0;
+    // // theta_3 = 0;
 
-	// delta_calcForward(theta_1, theta_2, theta_3, x, y, z);
-	// cout<<"x: "<<x<<" y: "<<y<<" z: "<<z<<endl;
+    // // delta_calcForward(theta_1, theta_2, theta_3, x, y, z);
+    // // cout<<"x: "<<x<<" y: "<<y<<" z: "<<z<<endl;
 
-    x = 0;
-    y = 0;
-    z = -374;
+    // x = 0;
+    // y = 0;
+    // z = -374;
 
-    delta_calcInverse(x, y, z, theta_1, theta_2, theta_3);
-	cout<<"theta_1: "<<theta_1<<" theta_2: "<<theta_2<<" theta_3: "<<theta_3<<endl;
+    // delta_calcInverse(x, y, z, theta_1, theta_2, theta_3);
+    // cout << "theta_1: " << theta_1 << " theta_2: " << theta_2 << " theta_3: " << theta_3 << endl;
 
-	return 0;
+    m_delta_robot = new delta_robot(); // construct a new delta_robot
+
+    m_delta_robot->mStartPoint.x = 0;
+    m_delta_robot->mStartPoint.y = 0;
+    m_delta_robot->mStartPoint.z = -375;
+
+    m_delta_robot->mEndPoint.x = 50;
+    m_delta_robot->mEndPoint.y = 50;
+    m_delta_robot->mEndPoint.z = -400;
+
+    m_delta_robot->system_linear();
+    m_delta_robot->TrapezoidalVelocityProfile(); // Trapezoidal velocity profile
+    m_delta_robot->system_linear_matrix();
+
+    // for (unsigned int i = 0; i < m_delta_robot->m_data_delta.size(); i++) {
+    //     m_delta_robot->m_data_delta[i]->theta_val = m_delta_robot->inverse(m_delta_robot->m_data_delta[i]->position_val);
+    //     m_delta_robot->CreateJointStateList(m_delta_robot->m_data_delta[i]->position_val, m_delta_robot->m_data_delta[i]->theta_val, false, position_value);
+    // }
+
+    return 0;
 }
 
-void test_inverse()
-{
-	int point = 1000;
+void test_inverse() {
+    int point = 1000;
 
-	double x0 = 0;
+    double x0 = 0;
     double y0 = 0;
     double z0 = -375;
-    
+
     double x1 = 50;
     double y1 = 50;
     double z1 = -400;
 
-	double denta_x = (x1 - x0)/point;
-    double denta_y = (y1 - y0)/point;
-    double denta_z = (z1 - z0)/point;
+    double denta_x = (x1 - x0) / point;
+    double denta_y = (y1 - y0) / point;
+    double denta_z = (z1 - z0) / point;
 
-	for(int i = 0; i <= point; i++)
-	{
-		x0 = x0 + denta_x;
+    for (int i = 0; i <= point; i++)
+    {
+        x0 = x0 + denta_x;
         y0 = y0 + denta_y;
         z0 = z0 + denta_z;
 
-		delta_calcInverse(x0, y0, z0, theta_1, theta_2, theta_3);
+        delta_calcInverse(x0, y0, z0, theta_1, theta_2, theta_3);
 
-		cout<<"theta_1: "<<theta_1<<" theta_2: "<<theta_2<<" theta_3: "<<theta_3<<endl;
-		sleep_for(milliseconds(10));
-	}
+        cout << "theta_1: " << theta_1 << " theta_2: " << theta_2 << " theta_3: " << theta_3 << endl;
+        sleep_for(milliseconds(10));
+    }
 }
 
-void test_direct()
-{
-	int point = 1000;
+void test_direct() {
+    int point = 1000;
 
-	double theta1 = 0;
+    double theta1 = 0;
     double theta2 = 0;
     double theta3 = 0;
-    
+
     double theta1_2 = 30;
     double theta2_2 = 40;
     double theta3_2 = 50;
 
-	double denta_x = (theta1_2 - theta1)/point;
-    double denta_y = (theta2_2 - theta2)/point;
-    double denta_z = (theta3_2 - theta3)/point;
+    double denta_x = (theta1_2 - theta1) / point;
+    double denta_y = (theta2_2 - theta2) / point;
+    double denta_z = (theta3_2 - theta3) / point;
 
-	for(int i = 0; i <= point; i++)
-	{
-		theta1 = theta1 + denta_x;
+    for (int i = 0; i <= point; i++)
+    {
+        theta1 = theta1 + denta_x;
         theta2 = theta2 + denta_y;
         theta3 = theta3 + denta_z;
 
-		delta_calcForward(theta1, theta2, theta3, x, y, z);
+        delta_calcForward(theta1, theta2, theta3, x, y, z);
 
-		cout<<"x: "<<x<<" y: "<<y<<" z: "<<z<<endl;
-		sleep_for(milliseconds(10));
-	}
+        cout << "x: " << x << " y: " << y << " z: " << z << endl;
+        sleep_for(milliseconds(10));
+    }
 }
 
-double delta_calcAngleYZ(double x0, double y0, double z0)
-{
+double delta_calcAngleYZ(double x0, double y0, double z0) {
     double y1 = -0.5 * 0.57735 * ff; // f/2 * tg 30
-    y0 -= 0.5 * 0.57735 * ee;    // shift center to edge
-                                 // z = a + b*y
+    y0 -= 0.5 * 0.57735 * ee;        // shift center to edge
+                                     // z = a + b*y
     double a = (x0 * x0 + y0 * y0 + z0 * z0 + rf * rf - re * re - y1 * y1) / (2 * z0);
     double b = (y1 - y0) / z0;
 
     // discriminant
     double d = -(a + b * y1) * (a + b * y1) + rf * (b * b * rf + rf);
-    if (d < 0) return -1; // non-existing point
+    if (d < 0) {
+        return -1; // non-existing point
+    }
     double yj = (y1 - a * b - sqrt(d)) / (b * b + 1); // choosing outer point
     double zj = a + b * yj;
     double theta = 180.0 * atan(-zj / (y1 - yj)) / pi + ((yj > y1) ? 180.0 : 0.0);
     return theta;
 }
 
-// inverse kinematics: (x0, y0, z0) -> (theta1, theta2, theta3)
-// returned status: 0=OK, -1=non-existing position
-void delta_calcInverse(double x0, double y0, double z0, double &theta1, double &theta2, double &theta3)
-{
+void delta_calcInverse(double x0, double y0, double z0, double &theta1, double &theta2, double &theta3) {
     theta1 = delta_calcAngleYZ(x0, y0, z0);
-    theta2 = delta_calcAngleYZ(x0 * cos120 + y0 * sin120, y0 * cos120 - x0 * sin120, z0);  // rotate  to +119 deg
-    theta3 = delta_calcAngleYZ(x0 * cos120 - y0 * sin120, y0 * cos120 + x0 * sin120, z0);  // rotate to -120 deg
+    theta2 = delta_calcAngleYZ(x0 * cos120 + y0 * sin120, y0 * cos120 - x0 * sin120, z0); // rotate  to +119 deg
+    theta3 = delta_calcAngleYZ(x0 * cos120 - y0 * sin120, y0 * cos120 + x0 * sin120, z0); // rotate to -120 deg
 }
 
-void delta_calcForward(double theta1, double theta2, double theta3, double &x0, double &y0, double &z0)
-{
+void delta_calcForward(double theta1, double theta2, double theta3, double &x0, double &y0, double &z0) {
     double t = (ff - ee) * tan30 / 2;
 
     theta1 *= dtr;
@@ -184,7 +203,7 @@ void delta_calcForward(double theta1, double theta2, double theta3, double &x0, 
     double d = b * b - (double)4.0 * a * c;
     if (d < 0)
     {
-		return; // non-existing point
+        return; // non-existing point
     }
 
     z0 = -0.5 * (b + sqrt(d)) / a;
