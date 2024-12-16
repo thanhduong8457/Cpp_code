@@ -115,11 +115,11 @@ void delta_robot::system_linear(void) {
     my_unit_vector = unit_vector(temp_point, temp_point1);
     angle_rotation(my_unit_vector);
 
-    double cos_axisz = cos(theta_y);
-    double sin_axisz = sin(theta_y);
+    double cos_axisz = cos(this->theta_y);
+    double sin_axisz = sin(this->theta_y);
 
-    double cos_axisy = cos(theta_z);
-    double sin_axisy = sin(theta_z);
+    double cos_axisy = cos(this->theta_z);
+    double sin_axisy = sin(this->theta_z);
 
     pf[0] = x_trans[0];
     pf[1] = x_trans[1];
@@ -352,6 +352,9 @@ void delta_robot::system_linear_matrix(void) {
     double xyz_res[4] = {0, 0, 0, 0};
     
     for (int i = 0; i < m_data_delta.size(); i++) {
+        for (int u = 0; u < 4; u++) {
+            xyz_res[u] = 0; // init the array
+        }
         system_linear_invese(m_data_delta[i]->pos, xyz_res);
 
         m_data_delta[i]->position_val.x = xyz_res[0];
@@ -593,14 +596,14 @@ void delta_robot::CreateJointStateList(
     angulos_codo(c1, p1, 1, a1_a, a1_b);
 
     // Data to publish in Rviz
-    position[0]  = theta.angle1;
-    position[1]  = theta.angle2;
-    position[2]  = theta.angle3;
+    position[0]  = theta.angle1 * dtr;
+    position[1]  = theta.angle2 * dtr;
+    position[2]  = theta.angle3 * dtr;
     position[3]  = theta.angle1 + a1_a;
     position[4]  = a1_b;
-    position[5]  = theta.angle2 + a2_a;
+    position[5]  = theta.angle2 * dtr + a2_a;
     position[6]  = a2_b;
-    position[7]  = theta.angle3 + a3_a;
+    position[7]  = theta.angle3 * dtr + a3_a;
     position[8]  = a3_b;
     position[9]  = pointi.x;
     position[10] = pointi.y;
