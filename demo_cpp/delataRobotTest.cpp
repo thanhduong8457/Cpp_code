@@ -74,10 +74,10 @@ int main() {
     m_delta_robot->TrapezoidalVelocityProfile(); // Trapezoidal velocity profile
     m_delta_robot->system_linear_matrix();
 
-    // for (unsigned int i = 0; i < m_delta_robot->m_data_delta.size(); i++) {
-    //     m_delta_robot->m_data_delta[i]->theta_val = m_delta_robot->inverse(m_delta_robot->m_data_delta[i]->position_val);
-    //     m_delta_robot->CreateJointStateList(m_delta_robot->m_data_delta[i]->position_val, m_delta_robot->m_data_delta[i]->theta_val, false, position_value);
-    // }
+    for (unsigned int i = 0; i < m_delta_robot->m_data_delta.size(); i++) {
+        m_delta_robot->m_data_delta[i]->theta_val = m_delta_robot->inverse(m_delta_robot->m_data_delta[i]->position_val);
+        m_delta_robot->CreateJointStateList(m_delta_robot->m_data_delta[i]->position_val, m_delta_robot->m_data_delta[i]->theta_val, false, position_value);
+    }
 
     return 0;
 }
